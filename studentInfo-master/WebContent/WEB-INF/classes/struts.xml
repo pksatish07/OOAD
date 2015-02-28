@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+    "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<constant name="struts.devMode" value="true" />
+	<package name="default" namespace="/" extends="struts-default">
+
+
+
+
+		<result-types>
+			<result-type name="tiles"
+				class="org.apache.struts2.views.tiles.TilesResult" />
+		</result-types>
+
+		<interceptors>
+
+			<interceptor name="authenticateInterceptor"
+				class="org.iiitb.interceptor.AuthenticateInterceptor"></interceptor>
+
+			<interceptor-stack name="secureAccess">
+				<interceptor-ref name="authenticateInterceptor" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+
+
+		<action name="adminLoginAction" class="org.iiitb.action.AdminLoginAction"
+			method="home">
+			<interceptor-ref name="secureAccess"></interceptor-ref>
+			<result name="success">adminhome.jsp</result>
+			<result name="login">home.jsp</result>
+		</action>
+
+
+
+
+		<action name="loginAction" class="org.iiitb.action.LoginAction"
+			method="login">
+			<result name="success" type="redirect">layoutAction</result>
+			<result name="admin" type="redirect">adminLoginAction</result>
+			<result name="login">/home.jsp</result>
+			<result name="input">/home.jsp</result>
+
+		</action>
+
+
+		<action name="layoutAction" class="org.iiitb.action.layout.LayoutAction">
+			<interceptor-ref name="secureAccess"></interceptor-ref>
+			<result name="success" type="tiles">homePage</result>
+			<result name="login">home.jsp</result>
+		</action>
+
+
+
+		<action name="subjectsAction" class="org.iiitb.action.subjects.SubjectsAction">
+			<interceptor-ref name="secureAccess"></interceptor-ref>
+			<result name="success" type="tiles">subjectsPage</result>
+			<result name="login">home.jsp</result>
+		</action>
+
+		<action name="imageAction" class="org.iiitb.action.image.ImageAction">
+		</action>
+
+		<action name="addSubjectsAction" class="org.iiitb.action.subjects.ManageSubjectsAction">
+			<result name="success">addSuccess.jsp</result>
+			<result name="error">addError.jsp</result>
+		</action>
+		<action name="initSubjectsAction" class="org.iiitb.action.subjects.ManageSubjectsAction"
+			method="initSubjects">
+			<result name="success">addCourse.jsp</result>
+			<result name="error">addError.jsp</result>
+		</action>
+
+		<action name="friendsPage" class="org.iiitb.action.friends.MyFriendsAction">
+			<interceptor-ref name="secureAccess"></interceptor-ref>
+			<result name="success" type="tiles">myFriendsPage</result>
+			<result name="error" type="tiles">profileNotFoundPage</result>
+			<result name="login">home.jsp</result>
+		</action>
+
+
+		<action name="friendProfile" class="org.iiitb.action.friends.FriendProfileAction">
+			<interceptor-ref name="secureAccess"></interceptor-ref>
+			<result name="success" type="tiles">friendsProfilePage</result>
+			<result name="error" type="tiles">profileNotFoundPage</result>
+			<result name="login">home.jsp</result>
+		</action>
+
+		<action name="updateFriend" class="org.iiitb.action.friends.FriendProfileAction"
+			method="update">
+			<interceptor-ref name="secureAccess"></interceptor-ref>
+			<result name="success" type="tiles">myFriendsPage</result>
+			<result name="login">home.jsp</result>
+		</action>
+
+		<action name="grades" class="org.iiitb.action.grades.GradesAction"
+			method="execute">
+			<interceptor-ref name="secureAccess"></interceptor-ref>
+			<result name="success" type="tiles">gradesPage</result>
+			<result name="login">home.jsp</result>
+		</action>
+
+		<action name="logout" class="org.iiitb.action.LogoutAction">
+			<result name="success">home.jsp</result>
+			<result name="login">home.jsp</result>
+		</action>
+
+		<action name="syllabusAction" class="org.iiitb.action.syllabus.SyllabusAction">
+			<interceptor-ref name="secureAccess"></interceptor-ref>
+			<result name="success" type="tiles">syllabusPage</result>
+			<result name="login">home.jsp</result>
+		</action>
+		<action name="selectSyllabusAction" class="org.iiitb.action.syllabus.SyllabusAction"
+			method="selectSyllabus">
+			<result name="success">addSyllabus.jsp</result>
+			<result name="error">adminhome.jsp</result>
+		</action>
+		<action name="addSyllabusAction" class="org.iiitb.action.syllabus.SyllabusAction"
+			method="addSyllabus">
+			<result name="success">addSuccess.jsp</result>
+			<result name="error">addError.jsp</result>
+		</action>
+
+
+		<action name="view" class="org.iiitb.action.viewprofile.MyProfileAction"
+			method="execute">
+			<result name="success" type="tiles">viewProfilePage</result>
+			<result name="login">home.jsp</result>
+		</action>
+		<action name="edit" class="org.iiitb.action.viewprofile.MyProfileAction"
+			method="execute">
+			<result name="success" type="tiles">editProfilePage</result>
+			<result name="login">home.jsp</result>
+			<result name="input">home.jsp</result>
+		</action>
+		<action name="submit" class="org.iiitb.action.editprofile.EditProfileAction"
+			method="execute">
+			<interceptor-ref name="fileUpload">
+				<param name="maximumSize">50971520</param>
+				<param name="allowedTypes">
+					image/png,image/gif,image/jpeg
+				</param>
+			</interceptor-ref>
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+			<result name="success" type="tiles">viewProfilePage</result>
+			<result name="login">home.jsp</result>
+		</action>
+
+
+
+		<action name="adduser" class="org.iiitb.action.user.AdduserAction">
+			<interceptor-ref name="fileUpload">
+				<param name="maximumSize">50971520</param>
+				<param name="allowedTypes">
+					image/png,image/gif,image/jpeg
+				</param>
+			</interceptor-ref>
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+			<result name="success">adminhome.jsp</result>
+			<result name="error">adminhome.jsp</result>
+			<result name="input">add_user.jsp</result>
+		</action>
+		<action name="addnews" class="org.iiitb.action.news.AddnewsAction">
+			<result name="success">adminhome.jsp</result>
+			<result name="error">adminhome.jsp</result>
+			<result name="input">add_news.jsp</result>
+		</action>
+		<action name="addann" class="org.iiitb.action.announcements.AddannAction">
+			<result name="success">adminhome.jsp</result>
+			<result name="error">adminhome.jsp</result>
+			<result name="input">add_ann.jsp</result>
+		</action>
+		<action name="addInterest" class="org.iiitb.action.announcements.AddInterestAction">
+			<result name="success">adminhome.jsp</result>
+			<result name="error">adminhome.jsp</result>
+			<result name="input">add_interest.jsp</result>
+		</action>
+		<action name="addAnnouncement"
+			class="org.iiitb.action.announcements.AddAnnouncementAction">
+			<result name="success">add_ann.jsp</result>
+			<result name="error">adminhome.jsp</result>
+			<result name="input">adminhome.jsp</result>
+		</action>
+		<action name="removenews" class="org.iiitb.action.news.RemovenewsAction">
+			<result name="success">remove_news.jsp</result>
+			<result name="error">remove_news.jsp</result>
+			<result name="input">remove_news.jsp</result>
+		</action>
+		<action name="removeann" class="org.iiitb.action.announcements.RemoveannAction">
+			<result name="success">remove_ann.jsp</result>
+			<result name="error">remove_ann.jsp</result>
+			<result name="input">remove_ann.jsp</result>
+		</action>
+
+
+		<action name="Index" class="org.iiitb.action.enrollment.Indexaction"
+			method="execute">
+			<result name="success" type="tiles">enrollmentMenuPage</result>
+			<result name="fail" type="tiles">enrollmentErrorPage</result>
+		</action>
+
+		<action name="Indexsuccess" class="org.iiitb.action.enrollment.Indexaction"
+			method="SelectedUpdate">
+			<result name="success">/</result>
+			<result name="fail">/</result>
+		</action>
+
+		<action name="enrollmentAction" class="org.iiitb.action.enrollment.EnrollmentAction">
+			<interceptor-ref name="secureAccess"></interceptor-ref>
+			<result name="success" type="tiles">enrollmentHomePage</result>
+			<result name="login">home.jsp</result>
+		</action>
+
+		<action name="Index1" class="org.iiitb.action.enrollment.Indexaction"
+			method="Update">
+			<result name="success" type="tiles">enrollmentPage</result>
+			<result name="fail" type="tiles">enrollmentErrorPage</result>
+		</action>
+
+		<action name="assignGradesAction" class="org.iiitb.action.admin.AssignGradesAction"
+			method="execute">
+			<result name="success">updateGrades.jsp</result>
+			<result name="error">addError.jsp</result>
+			<result name="login">adminhome.jsp</result>
+		</action>
+
+		<action name="updateGradesAction" class="org.iiitb.action.admin.UpdateGradesAction"
+			method="execute">
+			<result name="success">addSuccess.jsp</result>
+			<result name="error">addError.jsp</result>
+			<result name="login">adminhome.jsp</result>
+		</action>
+
+		<action name="syllabus" class="org.iiitb.action.syllabus.SyllabusAction"
+			method="currentSyllabus">
+			<interceptor-ref name="secureAccess" />
+			<result name="success">addSyllabus.jsp</result>
+		</action>
+
+
+		<action name="UpdateEnrollment" class="org.iiitb.action.enrollment.UpdateEnrollment">
+			<result name="success" type="tiles">enrollmentMenuPage</result>
+			<result name="error" type="tiles">enrollmentErrorPage</result>
+		</action>
+
+	</package>
+
+</struts>
