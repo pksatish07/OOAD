@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.util.List;
 
 import org.iiitb.action.enrollment.EnrollmentSubjectsInfo;
+import org.iiitb.action.subjects.CurrSubjectInfo;
 import org.iiitb.action.subjects.SubjectInfo;
 
 public interface CourseDAO {
@@ -55,5 +56,11 @@ public interface CourseDAO {
 	public boolean removeSubjects(Connection connection, String[] toDelete,
 			int userId);
 
+	public List<EnrollmentSubjectsInfo> getPreviousSubjects(
+			Connection connection, int parseInt);
+	
 	public boolean addSubjects(Connection connection, String[] toAdd, int userId);
+	
+	public List<CurrSubjectInfo> getcurrEnrolledCourses(Connection connection,
+			String student);
 }

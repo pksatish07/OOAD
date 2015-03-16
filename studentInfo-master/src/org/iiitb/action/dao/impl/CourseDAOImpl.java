@@ -17,15 +17,12 @@ import java.text.ParseException;
 
 import org.iiitb.action.dao.CourseDAO;
 import org.iiitb.action.enrollment.EnrollmentSubjectsInfo;
+import org.iiitb.action.subjects.CurrSubjectInfo;
 import org.iiitb.action.subjects.SubjectInfo;
 import org.iiitb.util.ConnectionPool;
 
 import java.sql.Statement;
 
-/**
- * @author arjun
- * 
- */
 public class CourseDAOImpl implements CourseDAO {
 
 	private static final String ALL_COURSES_QUERY = "SELECT  "
@@ -121,6 +118,12 @@ public class CourseDAOImpl implements CourseDAO {
 			+ "where result.course_id = course.course_id "
 			+ "and result.student_id=?";
 
+	private static final String GET_PREVIOUSLY_ENROLLED_COURSES = "SELECT distinct code,name,credits"
+			+ " from sisdb.result r,sisdb.course c"
+			+ " WHERE r.course_id = c.course_id"
+			+ " AND (c.semester_id < (select current_sem from sisdb.student where student_id = ?))"
+			+ " AND r.student_id = ? ";
+	
 	private static final String GET_ENROLLED_COURSES = "SELECT code,name,credits"
 			+ " from sisdb.result r,sisdb.course c"
 			+ " WHERE r.course_id = c.course_id"
@@ -134,14 +137,12 @@ public class CourseDAOImpl implements CourseDAO {
 			+ " AND (semester_id = (select current_sem from sisdb.student where student_id = ?))"
 			+ " AND (lastdate > DATE(NOW()))";
 
-	/*
-	 * private static final String GET_NAMES_QUERY_TERM =
-	 * "select distinct course.name " + "from result, course, semester " +
-	 * "where result.course_id = course.course_id " +
-	 * "and course.semester_id = semester.semester_id " +
-	 * "and result.student_id = ? and semester.term = ?";
-	 */
-
+	private static final String GET_CURR_ENROLLED_COURSES_QUERY_BY_NAME  = "SELECT c.course_id,c.code,c.name"
+			+ " from sisdb.result r,sisdb.course c"
+			+ " WHERE r.course_id = c.course_id"
+			+ " AND (c.semester_id = (select current_sem from sisdb.student,sisdb.user where student_id =user_id and user.name=?))"
+			+ " AND (r.student_id = (select user_id from sisdb.student,sisdb.user where student_id =user_id and user.name=?));";
+	
 	private static final String GET_NAMES_QUERY_TERM = "select c.name from course c ,result r where c.course_id = r.course_id and c.semester_id =? and r.student_id=?";
 
 	private static final String GET_FACULTY_ID = "SELECT " + "user_id "
@@ -169,12 +170,7 @@ public class CourseDAOImpl implements CourseDAO {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.iiitb.action.dao.CourseDAO#getAllCourses(java.sql.Connection,
-	 * int)
-	 */
+	
 	@Override
 	public List<SubjectInfo> getAllCourses(Connection connection, int userId) {
 		List<SubjectInfo> subjectInfoList = null;
@@ -200,13 +196,6 @@ public class CourseDAOImpl implements CourseDAO {
 		return subjectInfoList;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.iiitb.action.dao.CourseDAO#getEnrolledCourses(java.sql.Connection,
-	 * int)
-	 */
 	@Override
 	public List<SubjectInfo> getEnrolledCourses(Connection connection,
 			int userId) {
@@ -290,7 +279,6 @@ public class CourseDAOImpl implements CourseDAO {
 
 	public List<String> getNames(int studentID, int term) {
 
-		//System.out.println("Entered int int");
 		List<String> courseList = new LinkedList<String>();
 		Connection con = ConnectionPool.getConnection();
 		PreparedStatement ps = null;
@@ -318,29 +306,30 @@ public class CourseDAOImpl implements CourseDAO {
 		return courseList;
 	}
 
-	@Override
 	public boolean setCourse(Connection connection, String code,
 			String courseName, String credits, String lastDate,
 			String semester, String facultyName) {
 
 		int index, is;
-		String faculty_id = null;
+		String faculty_id = null,lastdate = null,faculty = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		Date lastDateForEnrollnment = null;
-
+		Date lastDateForEnrollment = null;
+		faculty = facultyName.replaceAll(",","");
+		
+		semester = semester.replaceAll("," ,"");
+		semester = semester.replaceAll(" " ,"");
 		try {
 			ps = connection.prepareStatement(GET_FACULTY_ID);
 
 			index = 1;
-			ps.setString(index, facultyName);
+			ps.setString(index,faculty);
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
 				faculty_id = rs.getString("user_id");
 				//System.out.println("faculty_id::" + faculty_id);
 			}
-
 			// Insert Course Details
 			ps = connection.prepareStatement(SET_COURSE);
 
@@ -352,17 +341,22 @@ public class CourseDAOImpl implements CourseDAO {
 			ps.setInt(index, Integer.parseInt(credits));
 
 			index = 4;
-			if (lastDate == null)
-				lastDate = "31/12/2014";
-			DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+			if (lastDate == null){
+				lastdate = "31/12/2015";
+				
+			}
+			else{
+				lastdate = lastDate;
+			}
+			DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 			try {
-				lastDateForEnrollnment = new Date(formatter.parse(lastDate)
+				
+				lastDateForEnrollment = new Date(formatter.parse(lastdate)
 						.getTime());
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			ps.setDate(index, lastDateForEnrollnment);
+			ps.setDate(index,lastDateForEnrollment);
 
 			index = 5;
 			ps.setInt(index, Integer.parseInt(faculty_id));
@@ -386,13 +380,7 @@ public class CourseDAOImpl implements CourseDAO {
 		return true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.iiitb.action.dao.CourseDAO#getEnrolledCourses(java.sql.Connection,
-	 * int)
-	 */
+	
 	@Override
 	public List<EnrollmentSubjectsInfo> getAlreadyEnrolledCourses(
 			Connection connection, int userId) {
@@ -470,24 +458,15 @@ public class CourseDAOImpl implements CourseDAO {
 	public boolean removeSubjects(Connection connection, String[] toDelete,
 			int userId) {
 
-		//System.out.println("HERE in removeSubjects");
 		Statement statement = null;
-		//System.out.println("toDelete");
-		/*for (String s : toDelete) {
-			System.out.println(" = " + s);
-		}*/
-
 		for (String subCode : toDelete) {
 			try {
 				String sqlQuery = "delete from sisdb.result "
-						+ "where "
-						+ "course_id = (select course_id from sisdb.course where code = '"
-						+ subCode + "')" + " AND student_id = '" + userId
-						+ "';";
+						+ " where "
+						+ " course_id IN (select course_id from sisdb.course where code = '"+ subCode + "') AND student_id = '" + userId+"';";
 				statement = (Statement) connection.createStatement();
 				int rs = statement.executeUpdate(sqlQuery);
 
-				//System.out.println("Rows affected = " + rs);
 			} catch (Exception e) {
 				// TODO: handle exception
 				e.printStackTrace();
@@ -501,10 +480,6 @@ public class CourseDAOImpl implements CourseDAO {
 	public boolean addSubjects(Connection connection, String[] toAdd,
 			int user_id) {
 
-		//System.out.println("toAdd");
-		for (String s : toAdd) {
-			//System.out.println(" = " + s);
-		}
 		for (String subjectCode : toAdd) {
 			int courseID = 0;
 			Statement statement = null;
@@ -544,4 +519,81 @@ public class CourseDAOImpl implements CourseDAO {
 		return true;
 	}
 
+
+	public List<EnrollmentSubjectsInfo> getPreviousSubjects(
+			Connection connection, int userId) {
+		
+		List<EnrollmentSubjectsInfo> previousSubjects = null;
+		PreparedStatement ps = null;
+		try {
+			previousSubjects = new ArrayList<EnrollmentSubjectsInfo>();
+			ps = connection.prepareStatement(GET_PREVIOUSLY_ENROLLED_COURSES);
+			ps.setInt(1, userId);
+			ps.setInt(2, userId);
+
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				EnrollmentSubjectsInfo newEnrollmentInfo = new EnrollmentSubjectsInfo();
+				newEnrollmentInfo.setEnorllmentSubjectsInfo(
+						rs.getString("code"), rs.getString("name"),
+						rs.getString("credits"));
+				previousSubjects.add(newEnrollmentInfo);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (null != ps) {
+				try {
+					ps.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return previousSubjects;
+		
+	}
+	
+	private void createCurrSubjectInfoListFromResultSet(ResultSet rs,
+			List<CurrSubjectInfo> subjectInfoList) throws SQLException {
+		while (rs.next()) {
+			String courseId = rs.getString("course_id");
+			String subjectCode = rs.getString("code");
+			String subjectName = rs.getString("name");
+			CurrSubjectInfo subjectInfo = new CurrSubjectInfo(courseId, subjectCode,
+					subjectName);
+			subjectInfoList.add(subjectInfo);
+		}
+	}
+	
+	public List<CurrSubjectInfo> getcurrEnrolledCourses(Connection connection,
+			String student) {
+		
+		List<CurrSubjectInfo> subjectInfoList = null;
+		PreparedStatement ps = null;
+		try {
+			subjectInfoList = new ArrayList<CurrSubjectInfo>();
+			ps = connection.prepareStatement(GET_CURR_ENROLLED_COURSES_QUERY_BY_NAME);
+			System.out.println(student);
+			
+			ps.setString(1, student);
+			ps.setString(2, student);
+			
+			ResultSet rs = ps.executeQuery();
+			createCurrSubjectInfoListFromResultSet(rs, subjectInfoList);
+			System.out.println("In get cuur course");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (null != ps) {
+				try {
+					ps.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return subjectInfoList;
+	}
 }

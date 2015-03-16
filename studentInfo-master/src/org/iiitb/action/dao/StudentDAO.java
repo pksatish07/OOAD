@@ -4,10 +4,6 @@ import java.util.List;
 
 import org.iiitb.model.StudentInfo;
 
-/**
- * @author prashanth
- * 
- */
 public interface StudentDAO
 {
 

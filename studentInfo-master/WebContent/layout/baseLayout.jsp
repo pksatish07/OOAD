@@ -1,5 +1,7 @@
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
 <%@taglib uri="/struts-tags" prefix="s"%>
+<%@ page import = "org.iiitb.action.notification.*" %>
+<%@ page import = "org.iiitb.model.User" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -75,6 +77,19 @@
 								<li class="active"><a href="friendsPage" type="button">My
 										Friends <span class="sr-only">(current)</span>
 								</a></li>
+									
+									<!-- Changed for Notification functionality -->
+									<%  NotificationCount count = new NotificationCount();
+											
+											
+											int displayCount = count.notificationCount(Integer.parseInt(((String)((User)session.getAttribute("user")).getUserId())));
+											//System.out.println("displayCount "+displayCount);%>
+									
+									<li class="active"><a href="notificationAction" type="button">Notification (<%= displayCount %>)
+										 <span class="sr-only">(current)</span>
+								</a></li>
+								
+								
 							</ul>
 						</div>
 					</div>

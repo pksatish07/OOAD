@@ -35,11 +35,12 @@
 #idef {
 	color: white;
 }
-.errorDiv{
-    background-color:gray;
-    border:0.5px red;
-    width:210px;
-    margin-bottom:4px;
+
+.errorDiv {
+	background-color: gray;
+	border: 0.5px red;
+	width: 210px;
+	margin-bottom: 4px;
 }
 </style>
 <script type="text/javascript">
@@ -86,24 +87,31 @@
 					<div class="form-group">
 						<label id="idef" for="user name">User Name</label><br> <input
 							type="text" class="form-control" name="username"
-							placeholder="Enter user name" id="name">
+							placeholder="Enter user name" id="name"><br>
+							<br>
+							<br>
 					</div>
 					<div class="form-group">
 						<label id="idef" for="pwd">Password</label> <br> <input
 							type="password" class="form-control" id="pwd"
-							placeholder="Enter password" name="password"><br>
+							placeholder="Enter password" name="password"><br> <a
+							id="idef" href="<s:url action="forgotPasswordRedirect"/>"><h6>forgot
+								password?</h6></a>
 					</div>
 					<div class="form-group">
 						<br>
 						<button type="submit" class="btn btn-primary"
 							style="background-color: #999999;">Log In</button>
+							<br>
+							<br>
+							<br>
 						<!-- #003D7A -->
 					</div>
 					<s:if test="hasActionErrors()">
-							<div class="errorDiv">
-								<s:actionerror />
-							</div>
-						</s:if>
+						<div class="errorDiv">
+							<s:actionerror />
+						</div>
+					</s:if>
 				</form>
 
 			</div>

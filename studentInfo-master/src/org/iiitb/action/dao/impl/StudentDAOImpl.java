@@ -30,6 +30,8 @@ public class StudentDAOImpl implements StudentDAO
 
 	
 	private static final String ARE_THEY_FRIENDS_QRY ="select * from friend where (student_id =? AND friend_id = (select student_id from student where roll_no=?))";
+	private static final String CHECK_NOTIFICATION_STATUS = "select * from notification where (friend_id =? AND student_id = (select student_id from student where roll_no=?))";
+	//private static final String ARE_THEY_FRIENDS_QRY ="select * from notification where (student_id =? AND )";
 	
 	
 	//private static final String ADD_FRIENDS_QRY = "insert into friends(student_id1, student_id2)     select s1.student_id, s2.student_id from student s1, student s2 where s1.student_id=? and s2.roll_no=?";
@@ -41,8 +43,7 @@ public class StudentDAOImpl implements StudentDAO
 	
 	private static final String ADD_FRIENDS_QRY = "insert into friend(friend_id,student_id)    select s1.student_id,s2.student_id from student s1,student s2 where s1.roll_no = ? AND s2.student_id=?";
 	
-	
-	
+
 	
 	private static final String GET_STUDENT_NAMES = "select name from user where user_type=?";
 	@Override
@@ -234,6 +235,23 @@ public class StudentDAOImpl implements StudentDAO
 			{
 				result = Constants.FRIEND;
 			}
+			
+			//Added for notification functionality
+			if(!result .equalsIgnoreCase(Constants.FRIEND))
+			{
+			stmt =  conn.prepareStatement(CHECK_NOTIFICATION_STATUS);
+			stmt.setString(1, rollNo);
+			stmt.setString(2, friendNo);
+		
+
+			 rs = stmt.executeQuery();
+
+			if (rs.next())
+			{
+				result = Constants.FRIEND_NOTIFICATION;
+			}
+			}
+			
 
 		}
 		catch (SQLException e)

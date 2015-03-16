@@ -1,6 +1,7 @@
 package org.iiitb.action.admin;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import org.iiitb.action.dao.impl.SemesterDAOImpl;
 import org.iiitb.action.dao.impl.StudentDAOImpl;
 import org.iiitb.action.dao.SemesterDAO;
 import org.iiitb.action.subjects.SubjectInfo;
+import org.iiitb.action.subjects.CurrSubjectInfo;
 import org.iiitb.model.StudentInfo;
 import org.iiitb.model.User;
 import org.iiitb.model.layout.AnnouncementsItem;
@@ -25,21 +27,14 @@ import org.iiitb.util.Constants;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-/**
- * 
- * @author Abhijith Madhav (MT2013002)
- * 
- */
+
 public class AssignGradesAction extends ActionSupport implements SessionAware
 {
-	/**
-	 * 
-	 * serial id
-	 */
-	private static final long serialVersionUID = -3927650660405287420L;
-
+	
+	
+	private static final long serialVersionUID = 2219219048815890751L;
 	private List<String> studentList;
-	private List<SubjectInfo> courseList;
+	private List<CurrSubjectInfo> courseList;
 	private List<String> gradeList;
 	private String studentDisplayChoice;
 	private String courseDisplayChoice;
@@ -52,13 +47,14 @@ public class AssignGradesAction extends ActionSupport implements SessionAware
 	private List<AnnouncementsItem> announcements;
 	private LayoutDAO layoutDAO = new LayoutDAOImpl();
 	private String lastLoggedOn = "";
+	private List<String> currentSemCurrentList = new ArrayList<String>();
 
 	public AssignGradesAction()
 	{
 		studentList = new LinkedList<String>();
 		//studentList.add(DEFAULT_TERM);
 
-		courseList = new LinkedList<SubjectInfo>();
+		courseList = new LinkedList<CurrSubjectInfo>();
 		//courseList.add(DEFAULT_COURSE);
 
 		//setResultList(new LinkedList<GradeInfo>());
@@ -67,6 +63,8 @@ public class AssignGradesAction extends ActionSupport implements SessionAware
 
 	public String execute() throws Exception
 	{
+		
+		
 		User loggedInUser = (User) this.session.get(USER);
 		if (loggedInUser != null)
 		{	
@@ -76,8 +74,13 @@ public class AssignGradesAction extends ActionSupport implements SessionAware
 			  studentDisplayChoice = studentList.get(0);
 			}
 
-			courseList.addAll(new CourseDAOImpl().getEnrolledCourses(connection, studentDisplayChoice));
+			courseList.addAll(new CourseDAOImpl().getcurrEnrolledCourses(connection, studentDisplayChoice));
 			gradeList.addAll(new ResultDAOImpl().getGrades());
+			
+			for(CurrSubjectInfo c: courseList){
+				currentSemCurrentList.add(c.getSubjectName());
+			}
+			
 			
 			allNews = layoutDAO.getAllNews(connection);
 			announcements = layoutDAO.getAnnouncements(connection,
@@ -99,12 +102,12 @@ public class AssignGradesAction extends ActionSupport implements SessionAware
     this.studentDisplayChoice = studentDisplayChoice;
   }
 
-  public List<SubjectInfo> getCourseList()
+  public List<CurrSubjectInfo> getCourseList()
 	{
 		return courseList;
 	}
 
-	public void setCourseList(List<SubjectInfo> courseList)
+	public void setCurrCourseList(List<CurrSubjectInfo> courseList)
 	{
 		this.courseList = courseList;
 	}
@@ -182,5 +185,13 @@ public class AssignGradesAction extends ActionSupport implements SessionAware
 
 	public void setGradeDisplayChoice(String gradeDisplayChoice) {
 		this.gradeDisplayChoice = gradeDisplayChoice;
+	}
+
+	public List<String> getCurrentSemCurrentList() {
+		return currentSemCurrentList;
+	}
+
+	public void setCurrentSemCurrentList(List<String> currentSemCurrentList) {
+		this.currentSemCurrentList = currentSemCurrentList;
 	}
 }

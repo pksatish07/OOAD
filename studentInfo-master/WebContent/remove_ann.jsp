@@ -10,12 +10,14 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet"
-	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<script
-	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+<script src="bootstrap/js/jquery.min.js"></script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
+
+<%-- <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script> --%>
 
 <title>Remove Announcements</title>
 </head>
@@ -46,11 +48,13 @@
 
 
 										<div class="btn-group">
-											<button type="button" class="btn btn-default btn-lg">Select Announcement</button>
-											<button type="button" class="btn btn-default btn-lg dropdown-toggle"
+											<button type="button" class="btn btn-default btn-lg">Select
+												Announcement</button>
+											<button type="button"
+												class="btn btn-default btn-lg dropdown-toggle"
 												data-toggle="dropdown">
 												<span class="caret"></span>
-												
+
 											</button>
 											<ul class="dropdown-menu" role="menu">
 												<%
@@ -111,7 +115,8 @@
 											<input type="text" name="name" id="name">
 
 										</div>
-										<input type="submit" class="btn btn-default btn-lg" value="Delete">
+										<input type="submit" class="btn btn-default btn-lg"
+											value="Delete">
 									</div>
 								</div>
 							</div>
@@ -125,11 +130,11 @@
 
 
 			</div>
-			
+
 			<div align="center">
 				<s:if test="hasActionErrors()">
 					<div class="errors"
-						style="background-color: #FFCCCC; border: 1px solid #CC0000; width: 550px; ">
+						style="background-color: #FFCCCC; border: 1px solid #CC0000; width: 550px;">
 						<s:actionerror />
 					</div>
 				</s:if>
@@ -148,42 +153,26 @@
 		</div>
 	</div>
 	<script type="text/javascript">
-											
-											$(function() {
+		$(function() {
 
-												$(".dropdown-menu li a")
-														.click(
-																function() {
+			$(".dropdown-menu li a").click(function() {
 
-																	$(
-																			".btn:first-child")
-																			.text(
-																					$(
-																							this)
-																							.text());
-																	$(
-																			".btn:first-child")
-																			.val(
-																					$(
-																							this)
-																							.text());
+				$(".btn:first-child").text($(this).text());
+				$(".btn:first-child").val($(this).text());
 
-																	var selected = $(
-																			this)
-																			.text();
+				var selected = $(this).text();
 
-																	document
-																			.getElementById("name").text = selected;
-																	document
-																			.getElementById("name").value = selected;
-																	document
-																	.getElementById("name").value = selected;
+				document.getElementById("name").text = selected;
+				document.getElementById("name").value = selected;
+				document.getElementById("name").value = selected;
 
-																	//  document.write(selected);
-																});
+				//  document.write(selected);
+			});
 
-											});
-										</script>
+		});
+	
+		
+	</script>
 
 
 </body>

@@ -7,8 +7,10 @@ import java.util.Map;
 
 import org.apache.struts2.interceptor.SessionAware;
 import org.iiitb.action.dao.LayoutDAO;
+import org.iiitb.action.dao.NotificationDAO;
 import org.iiitb.action.dao.StudentDAO;
 import org.iiitb.action.dao.impl.LayoutDAOImpl;
+import org.iiitb.action.dao.impl.NotificationDAOImpl;
 import org.iiitb.action.dao.impl.StudentDAOImpl;
 import org.iiitb.model.StudentInfo;
 import org.iiitb.model.User;
@@ -20,7 +22,7 @@ import org.iiitb.util.Constants;
 import com.opensymphony.xwork2.ActionSupport;
 
 /**
- * @author prashanth
+ * @author ganesh
  * 
  */
 public class FriendProfileAction extends ActionSupport implements SessionAware {
@@ -78,6 +80,15 @@ public class FriendProfileAction extends ActionSupport implements SessionAware {
 	}
 
 	String isFriend;
+	String isNotified;
+
+	public String getIsNotified() {
+		return isNotified;
+	}
+
+	public void setIsNotified(String isNotified) {
+		this.isNotified = isNotified;
+	}
 
 	public String getIsFriend() {
 		return isFriend;
@@ -134,15 +145,30 @@ public class FriendProfileAction extends ActionSupport implements SessionAware {
 				setIsFriend(studentDao.findRelationShip(user.getUserId(),
 						friendNo));
 
+			// Set isNotified
+			NotificationDAO natDao = new NotificationDAOImpl();
+			//System.out.println("Test "+natDao.isNotified(user.getUserId(), friendNo));
+			setIsNotified(natDao.isNotified(user.getUserId(), friendNo));
+
 		}
 		return result;
 	}
 
 	public String update() {
 
-		User user = (User) session.get("user");
 		StudentDAO studentDao = new StudentDAOImpl();
-		studentDao.addFriend(user.getUserId(), friendNo);
+
+		StudentInfo studentInfo = studentDao.getStudentByRollNo(friendNo);
+		if (studentInfo == null) {
+			return ERROR;
+		} else {
+			setFriendProfile(studentInfo);
+		}
+
+		User user = (User) session.get("user");
+
+		NotificationDAO addNot = new NotificationDAOImpl();
+		addNot.addNotification(Integer.parseInt(user.getUserId()), friendNo);
 
 		setMyProfile(studentDao.getStudentByUserId(user.getUserId()));
 
@@ -158,9 +184,35 @@ public class FriendProfileAction extends ActionSupport implements SessionAware {
 			e.printStackTrace();
 		}
 		setLastLoggedOn((String) this.session.get(Constants.LAST_LOGGED_ON));
+
+		if (studentInfo.getStudentId() == Integer.parseInt(user.getUserId())) {
+			setIsFriend(Constants.FRIEND);
+		} else
+
+			setIsFriend(studentDao.findRelationShip(user.getUserId(), friendNo));
+		setIsNotified(addNot.isNotified(user.getUserId(), friendNo));
 		ConnectionPool.freeConnection(connection);
 		return SUCCESS;
 	}
+	
+	
+	
+	
+	public String acceptFriend()
+	{
+		
+		
+		User user = (User) session.get("user");
+		NotificationDAO addNot = new NotificationDAOImpl();
+		addNot.acceptFriend(user.getUserId(), friendNo);
+		
+		
+		return "success";
+	}
+	
+	
+	
+	
 
 	Map<String, Object> session;
 
@@ -181,4 +233,5 @@ public class FriendProfileAction extends ActionSupport implements SessionAware {
 	public void setLastLoggedOn(String lastLoggedOn) {
 		this.lastLoggedOn = lastLoggedOn;
 	}
+
 }

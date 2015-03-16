@@ -37,9 +37,31 @@
 			<td></td>
 			<td></td>
 			<td></td>
-			<td><s:form action="updateFriend">
+			<td>
+			
+		<s:set name="checkNotification" value="isNotified" />
+			
+			<s:if test="%{#checkNotification=='notified'}">
+			<s:form action ="acceptFriend">
+			<s:hidden key="friendNo" value="%{friendProfile.rollNo}"></s:hidden>
+			<s:submit label="Accept Friend" value="Accept Friend" />
+			</s:form>
+			</s:if>
+			
+			
+			
+			
+			<s:else>
+			
+			<s:form action="updateFriend">
 					<s:set name="checkFriend" value="isFriend" />
 
+					<s:if test="%{#checkFriend=='friend_notification_sent'}">
+						<td><br>Friend Request Sent</td>
+					
+					</s:if>
+				
+				
 					<s:if test="%{#checkFriend=='friend'}">
 						<td><input type="checkbox" align="top" border="1"
 							checked="checked" disabled="disabled" />Friend</td>
@@ -49,11 +71,13 @@
 					<s:elseif test="%{#checkFriend=='not_a_friend'}">
 
 						<td><s:checkbox name="checkMe" fieldValue="true"
-								label="Friend"  disabled="true"/> 
+								label="Friend"  disabled="true"/> </td>
 						<s:hidden key="friendNo" value="%{friendProfile.rollNo}"></s:hidden>
 						<td><s:submit label="Add Friend" value="Add Friend" /></td>
-					</s:elseif></td>
-			</s:form>
+					</s:elseif>
+					</s:form>
+		</s:else>
+			
 
 		</tr>
 	</table>

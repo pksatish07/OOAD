@@ -93,7 +93,7 @@
 						<div class="col-md-4"></div>
 						<div class="col-md-4">
 							<div class="form-group">
-								<label for="sid">Password:</label> <input type="text"
+								<label for="sid">Password:</label> <input type="password"
 									class="form-control" name="password" id="password">
 							</div>
 						</div>
@@ -137,8 +137,8 @@
 						<div class="col-md-4"></div>
 						<div class="col-md-4">
 							<div class="form-group">
-								<label for="sid">Date of Birth (dd/mm/yyyy):</label> <input
-									type="text" class="form-control" name="dob" id="dob">
+								<label for="sid">Date of Birth (mm/dd/yyyy):</label> <input
+									type="date" class="form-control" name="dob" id="dob">
 							</div>
 						</div>
 						<div class="col-md-4"></div>

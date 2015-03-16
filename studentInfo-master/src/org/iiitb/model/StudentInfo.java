@@ -11,10 +11,6 @@ import java.util.List;
 import org.iiitb.util.ConnectionPool;
 import org.iiitb.util.Constants;
 
-/**
- * @author prashanth
- * 
- */
 public class StudentInfo
 {
 	int studentId;

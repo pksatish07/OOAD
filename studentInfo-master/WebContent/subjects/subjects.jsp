@@ -36,7 +36,7 @@
 											<s:param name="subjectCode" value="subjectCode" />
 										</s:url>
 										<center>
-											<s:a href="%{syllabusURL}">
+											<s:a href="%{syllabusURL}" style="color:white">
 												<s:property value="subjectCode" />
 											</s:a>
 										</center></td>

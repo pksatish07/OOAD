@@ -206,13 +206,14 @@ long user_id = -1;
         dob = "11/09/1989";
       }
       Date dobDate = null;
-      DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+      DateFormat formatter = new SimpleDateFormat("yyyy-mm-dd");
       try {
         dobDate = new Date(formatter.parse(dob).getTime());
       } catch (ParseException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
+      System.out.println(dobDate);
       preStmt.setDate(5, dobDate);
       preStmt.setInt(6,current_sem);
 

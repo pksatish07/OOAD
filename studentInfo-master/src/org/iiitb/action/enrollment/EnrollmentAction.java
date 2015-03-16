@@ -9,6 +9,7 @@ import org.apache.struts2.interceptor.SessionAware;
 import org.iiitb.action.dao.LayoutDAO;
 import org.iiitb.action.dao.impl.CourseDAOImpl;
 import org.iiitb.action.dao.impl.LayoutDAOImpl;
+import org.iiitb.action.dao.impl.SemesterDAOImpl;
 import org.iiitb.model.User;
 import org.iiitb.model.layout.AnnouncementsItem;
 import org.iiitb.model.layout.NewsItem;
@@ -28,6 +29,17 @@ public class EnrollmentAction extends ActionSupport implements SessionAware {
 	private LayoutDAO layoutDAO = new LayoutDAOImpl();
 	private List<EnrollmentSubjectsInfo> subjectsToDelete;
 	private List<EnrollmentSubjectsInfo> subjectsToAdd;
+	private List<EnrollmentSubjectsInfo> previousSubjects;
+	private int currentSem;
+
+
+	public int getCurrentSem() {
+		return currentSem;
+	}
+
+	public void setCurrentSem(int currentSem) {
+		this.currentSem = currentSem;
+	}
 
 	public List<String> getSemester() {
 		return semester;
@@ -41,16 +53,22 @@ public class EnrollmentAction extends ActionSupport implements SessionAware {
 
 	public String execute() throws SQLException {
 
-		/*for(String sem:semester){
-			System.out.println("sem =" +sem);
-		}*/
 		User loggedInUser = (User) this.session.get(USER);
 		if (null != loggedInUser) {
 
 			String user_id = loggedInUser.getUserId();
+			
 			Connection connection = ConnectionPool.getConnection();
 			this.setSubjectsToDelete(new CourseDAOImpl().getAlreadyEnrolledCourses(connection, Integer.parseInt(user_id)));
 			this.setSubjectsToAdd(new CourseDAOImpl().getNotEnrolledCourses(connection, Integer.parseInt(user_id)));
+			this.setCurrentSem(new SemesterDAOImpl().getCurrentSem(connection, Integer.parseInt(user_id)));
+			if(this.getCurrentSem() >1){
+				this.setPreviousSubjects(new CourseDAOImpl().getPreviousSubjects(connection,Integer.parseInt(user_id)));
+			}
+			else{
+				this.setPreviousSubjects(null);
+			}
+			
 			setLastLoggedOn((String) this.session.get(Constants.LAST_LOGGED_ON));
 			allNews = layoutDAO.getAllNews(connection);
 			announcements = layoutDAO.getAnnouncements(connection,
@@ -65,7 +83,7 @@ public class EnrollmentAction extends ActionSupport implements SessionAware {
 		}
 	}
 
-	
+
 	@Override
 	public void setSession(Map<String, Object> session) {
 		this.session = session;
@@ -109,6 +127,14 @@ public class EnrollmentAction extends ActionSupport implements SessionAware {
 
 	public void setSubjectsToAdd(List<EnrollmentSubjectsInfo> subjectsToAdd) {
 		this.subjectsToAdd = subjectsToAdd;
+	}
+
+	public List<EnrollmentSubjectsInfo> getPreviousSubjects() {
+		return previousSubjects;
+	}
+
+	public void setPreviousSubjects(List<EnrollmentSubjectsInfo> previousSubjects) {
+		this.previousSubjects = previousSubjects;
 	}
 
 }

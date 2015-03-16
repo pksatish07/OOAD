@@ -2,67 +2,78 @@
 <!DOCTYPE tiles-definitions PUBLIC
        "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
        "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
-       
-	<tiles-definitions>
-	   <definition name="baseLayout" template="/layout/baseLayout.jsp">
-	      <put-attribute name="title"  value="Student Information System"/>
-	      <put-attribute name="banner" value="/layout/banner.jsp"/>
+
+<tiles-definitions>
+	<definition name="baseLayout" template="/layout/baseLayout.jsp">
+		<put-attribute name="title" value="Student Information System" />
+		<put-attribute name="banner" value="/layout/banner.jsp" />
+	</definition>
+
+	<definition name="enrollmentCountErrorPage" extends="baseLayout">
+		<put-attribute name="enrollment" value="/layout/enrollmentBold.jsp" />
+		<put-attribute name="body"
+			value="/enrollment/enrollmentCountErrorPage.jsp" />
+	</definition>
+
+	<definition name="homePage" extends="baseLayout">
+		<put-attribute name="home" value="/layout/homeBold.jsp" />
+		<put-attribute name="body" value="/home/homePage.jsp" />
+	</definition>
+
+	<definition name="subjectsPage" extends="baseLayout">
+		<put-attribute name="subjects" value="/layout/subjectsBold.jsp" />
+		<put-attribute name="body" value="/subjects/subjects.jsp" />
+	</definition>
+
+	<definition name="myFriendsPage" extends="baseLayout">
+		<put-attribute name="myFriends" value="/layout/myFriendsBold.jsp" />
+		<put-attribute name="body" value="/friends/myFriends.jsp" />
+	</definition>
+
+	<definition name="profileNotFoundPage" extends="baseLayout">
+		<put-attribute name="body" value="/friends/ProfileNotFoundjsp.jsp" />
+	</definition>
+
+	<definition name="friendsProfilePage" extends="baseLayout">
+		<put-attribute name="body" value="/friends/friendsProfile.jsp" />
+	</definition>
+
+	<definition name="gradesPage" extends="baseLayout">
+		<put-attribute name="grades" value="/layout/gradesBold.jsp" />
+		<put-attribute name="body" value="/grades/grades.jsp" />
+	</definition>
+	<definition name="viewProfilePage" extends="baseLayout">
+		<put-attribute name="body" value="/ViewProfile.jsp" />
+	</definition>
+	<definition name="editProfilePage" extends="baseLayout">
+		<put-attribute name="body" value="/EditProfile.jsp" />
+	</definition>
+
+
+	<definition name="syllabusPage" extends="baseLayout">
+		<put-attribute name="subjects" value="/layout/subjectsBold.jsp" />
+		<put-attribute name="body" value="/syllabus/syllabus.jsp" />
+	</definition>
+
+	<definition name="enrollmentHomePage" extends="baseLayout">
+		<put-attribute name="enrollment" value="/layout/enrollmentBold.jsp" />
+		<put-attribute name="body" value="/enrollment/enrollmentHomePage.jsp" />
+	</definition>
+
+	<definition name="enrollmentPage" extends="baseLayout">
+		<put-attribute name="body" value="/enrollment/enrollmentfinal.jsp" />
+	</definition>
+
+	<definition name="enrollmentErrorPage" extends="baseLayout">
+		<put-attribute name="body" value="/enrollment/error.jsp" />
+	</definition>
+	<definition name="enrollmentMenuPage" extends="baseLayout">
+		<put-attribute name="body" value="/enrollment/enrollmentMenu.jsp" />
+	</definition>
+	   <definition name="notificationPage" extends="baseLayout">
+	      <put-attribute name="body" value="/notification/myFriendsNotification.jsp"/>
 	   </definition>
 	   
-	   <definition name="homePage" extends="baseLayout">
-	   	  <put-attribute name="home"   value="/layout/homeBold.jsp"/>
-	      <put-attribute name="body" value="/home/homePage.jsp"/>
-	   </definition>
-	   
-	   <definition name="subjectsPage" extends="baseLayout">
-	      <put-attribute name="subjects"   value="/layout/subjectsBold.jsp"/>
-	      <put-attribute name="body" value="/subjects/subjects.jsp"/>
-	   </definition>
-	   
-	   <definition name="myFriendsPage" extends="baseLayout">
-	      <put-attribute name="myFriends"   value="/layout/myFriendsBold.jsp"/>
-	      <put-attribute name="body" value="/friends/myFriends.jsp"/>
-	   </definition>
-	   
-	   <definition name="profileNotFoundPage" extends="baseLayout">
-	      <put-attribute name="body" value="/friends/ProfileNotFoundjsp.jsp"/>
-	   </definition>
-	   
-	   <definition name="friendsProfilePage" extends="baseLayout">
-	      <put-attribute name="body" value="/friends/friendsProfile.jsp"/>
-	   </definition>
-	   
-	   <definition name="gradesPage" extends="baseLayout">
-	      <put-attribute name="grades"   value="/layout/gradesBold.jsp"/>
-	      <put-attribute name="body" value="/grades/grades.jsp"/>
-	   </definition>
-	    <definition name="viewProfilePage" extends="baseLayout">
-	      <put-attribute name="body" value="/ViewProfile.jsp"/>
-	   </definition>
-	   <definition name="editProfilePage" extends="baseLayout">
-	      <put-attribute name="body" value="/EditProfile.jsp"/>
-	   </definition>
-	   
-	   
-	   <definition name="syllabusPage" extends="baseLayout">
-	      <put-attribute name="subjects"   value="/layout/subjectsBold.jsp"/>
-	      <put-attribute name="body" value="/syllabus/syllabus.jsp"/>
-	   </definition>
-	   
-	   <definition name="enrollmentHomePage" extends="baseLayout">
-	      <put-attribute name="enrollment"   value="/layout/enrollmentBold.jsp"/>
-	      <put-attribute name="body" value="/enrollment/enrollmentHomePage.jsp"/>
-	   </definition>
-	   
-	    <definition name="enrollmentPage" extends="baseLayout">
-	      <put-attribute name="body" value="/enrollment/enrollmentfinal.jsp"/>
-	   </definition>
-	   
-	    <definition name="enrollmentErrorPage" extends="baseLayout">
-	      <put-attribute name="body" value="/enrollment/error.jsp"/>
-	   </definition>
-	   <definition name="enrollmentMenuPage" extends="baseLayout">
-	      <put-attribute name="body" value="/enrollment/enrollmentMenu.jsp"/>
-	   </definition>
-	   
+
+
 </tiles-definitions>

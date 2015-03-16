@@ -69,6 +69,7 @@ public class LoginAction extends ActionSupport implements SessionAware
 				session.put("userName", username);
 				if (newUser.getUserType().equalsIgnoreCase("A"))
 				{
+				
 					return "admin";
 				}
 

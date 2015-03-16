@@ -16,7 +16,9 @@ public interface Constants
 
 	String NOT_A_FRIEND = "not_a_friend";
 	String FRIEND = "friend";
-	
+	String FRIEND_NOTIFICATION = "friend_notification_sent";
+	String NOTIFICATION = "notified";
+	String NON_NOTIFICATION = "not notified";
 	public String LAST_LOGGED_ON = "date";
 
 }

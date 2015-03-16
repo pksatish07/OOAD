@@ -21,7 +21,7 @@
 					list="courseList" label="Subject"></s:select>
 
 			<!--  The grades table -->
-
+			<br><br>
 				<table border="1">
 					<thead>
 						<tr>

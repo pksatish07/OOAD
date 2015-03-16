@@ -25,6 +25,7 @@ import org.iiitb.model.User;
 import org.iiitb.model.layout.AnnouncementsItem;
 import org.iiitb.model.layout.NewsItem;
 import org.iiitb.util.ConnectionPool;
+import org.iiitb.util.Constants;
 
 import com.opensymphony.xwork2.ActionSupport;
 
@@ -39,9 +40,10 @@ public class UpdateEnrollment extends ActionSupport implements ServletRequestAwa
 	private LayoutDAO layoutDAO = new LayoutDAOImpl();
 	public String user_id;
 	private HttpServletRequest request;
+	private int enrolledCount;
 
 
-	public String execute(){
+	public String execute() throws NumberFormatException, SQLException{
 
 		User loggedInUser = (User) this.session.get(USER);
 		if (null == loggedInUser) {
@@ -56,11 +58,34 @@ public class UpdateEnrollment extends ActionSupport implements ServletRequestAwa
 			Connection connection = ConnectionPool.getConnection();
 			String[] toDelete = getServletRequest().getParameterValues("toDeleteCheckbox");
 			String[] toAdd = getServletRequest().getParameterValues("toAddCheckbox");
+			int toAddSub,toDeleteSub;
+			if(null != toDelete){
+			toDeleteSub = toDelete.length;
+			//System.out.println("todeletelength = "+toDeleteSub);
+			}
+			else{
+				toDeleteSub = 0;
+			}
+				
+			if(null != toAdd ){
+			toAddSub =  toAdd.length;
+			//System.out.println("toADDlength = " + toAddSub);
+			}
+			else{
+				toAddSub =0;
+			}
+			
+			//System.out.println("enrolledcount = "+this.getEnrolledCount());
+			if(this.getEnrolledCount() - toDeleteSub +toAddSub > 4){
+				
+				return "countError";
+			}
 			List<String> subjectsToDelete = null;
 			boolean deleteResult =  true;
 			boolean addResult =true;
 			int userId;
-
+			
+			
 			if(null != toDelete){
 				try {
 
@@ -77,21 +102,22 @@ public class UpdateEnrollment extends ActionSupport implements ServletRequestAwa
 			if(null != toAdd){
 				try{
 					CourseDAO addSubject = new CourseDAOImpl();
-					//System.out.println("toAdd");
-					for(String s:toAdd){
-						//System.out.println(" = " +s);
-					}
 					addResult =  addSubject.addSubjects(connection,toAdd,Integer.parseInt(user_id));
 					//System.out.println("Success from addSubjects");
 				} catch (Exception e) {
 
-					System.out.println("System error");
-					// TODO: handle exception
+					System.out.println("System error add subjects");
 					e.printStackTrace();
 
 				}
 
 			}
+			setLastLoggedOn((String) this.session.get(Constants.LAST_LOGGED_ON));
+			allNews = layoutDAO.getAllNews(connection);
+			announcements = layoutDAO.getAnnouncements(connection,
+					Integer.parseInt(loggedInUser.getUserId()));
+
+
 			if(deleteResult ==  true & addResult == true)
 				return "success";
 			else
@@ -159,4 +185,12 @@ public class UpdateEnrollment extends ActionSupport implements ServletRequestAwa
 		return this.session;
 	}
 
+
+	public int getEnrolledCount() {
+		return this.enrolledCount;
+	}
+
+	public void setEnrolledCount(int enrolledCount) {
+		this.enrolledCount = enrolledCount;
+	}
 }

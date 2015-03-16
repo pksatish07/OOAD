@@ -1,4 +1,5 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -11,13 +12,47 @@
 </head>
 </head>
 <body>
+<%int enrolledCount = 0; %>
+<div align = "center">
 	<form action="UpdateEnrollment" method="post">
 		<div class="well" align="center">
 			<p class="lead">Subject Enrollment</p>
 		</div>
 		<div class="container-fluid">
 			<div class="row">
-				<div class="col-md-7 col-sm-offset-1">
+				<div class="col-md-8 col-md-offset-2" align="center">
+					<p class="lead">
+						Current Semester:
+						<s:property value="currentSem"></s:property>
+					</p>
+				</div>
+
+				<div class="col-md-8 col-md-offset-2" align = "center">
+
+					<div class="row">
+						<p class="lead">Subjects Enrolled In Previous Semesters</p>
+					</div>
+					<div class="row">
+						<table
+							class="table table-responsive table-hover table-striped table-condensed">
+							<thead>
+								<tr>
+									<td><b>Course Code</b></td>
+									<td><b>Course Name</b></td>
+									<td><b>Credits</b></td>
+								</tr>
+							</thead>
+							<s:iterator value="previousSubjects" var="enrolled">
+								<tr>
+									<td><s:property value="#enrolled.subjectCode"></s:property></td>
+									<td><s:property value="#enrolled.subjectName"></s:property></td>
+									<td><s:property value="#enrolled.credits"></s:property></td>
+								</tr>
+							</s:iterator>
+						</table>
+					</div>
+
+					<br>
 					<div class="row">
 						<p class="lead">Subjects Already Enrolled</p>
 					</div>
@@ -32,18 +67,20 @@
 									<td><b>Remove</b></td>
 								</tr>
 							</thead>
-							<s:iterator value = "subjectsToDelete" var = "enrolled">
-							<tr>
-									<td><s:property value = "#enrolled.subjectCode"></s:property></td>
-									<td><s:property value = "#enrolled.subjectName"></s:property></td>
-									<td><s:property value = "#enrolled.credits"></s:property></td>
-									<td><input type="checkbox" value= <s:property value = "#enrolled.subjectCode"></s:property>
+							<s:iterator value="subjectsToDelete" var="enrolled">
+								<tr>
+									<%enrolledCount++; %>
+									<td><s:property value="#enrolled.subjectCode"></s:property></td>
+									<td><s:property value="#enrolled.subjectName"></s:property></td>
+									<td><s:property value="#enrolled.credits"></s:property></td>
+									<td><input type="checkbox"
+										value=<s:property value = "#enrolled.subjectCode"></s:property>
 										name="toDeleteCheckbox"></td>
-							</tr>
+								</tr>
 							</s:iterator>
 						</table>
 					</div>
-					<br> <br>
+					<br>
 					<div class="row">
 						<p class="lead">Subjects you can enroll</p>
 						<table
@@ -56,14 +93,15 @@
 									<td><b>Add</b></td>
 								</tr>
 							</thead>
-							<s:iterator value = "subjectsToAdd" var = "notEnrolled">
-							<tr>
-									<td><s:property value = "#notEnrolled.subjectCode"></s:property></td>
-									<td><s:property value = "#notEnrolled.subjectName"></s:property></td>
-									<td><s:property value = "#notEnrolled.credits"></s:property></td>
-									<td><input type="checkbox" value= <s:property value = "#notEnrolled.subjectCode"></s:property>
+							<s:iterator value="subjectsToAdd" var="notEnrolled">
+								<tr>
+									<td><s:property value="#notEnrolled.subjectCode"></s:property></td>
+									<td><s:property value="#notEnrolled.subjectName"></s:property></td>
+									<td><s:property value="#notEnrolled.credits"></s:property></td>
+									<td><input type="checkbox"
+										value=<s:property value = "#notEnrolled.subjectCode"></s:property>
 										name="toAddCheckbox"></td>
-							</tr>
+								</tr>
 							</s:iterator>
 						</table>
 					</div>
@@ -74,9 +112,12 @@
 				<input type="submit" class="btn btn-warning btn-lg" value="Update"
 					onclick="validate(this)">
 			</div>
-			
+			<div class ="hidden">
+				<input type = "text" value = <%=enrolledCount%> name = "enrolledCount">
+			</div>
 		</div>
 	</form>
+</div>
 </body>
 
 <%-- <script type="text/javascript">

@@ -13,4 +13,6 @@ public interface SemesterDAO
 	
 	public List<String> getSemester(Connection connection, int studentID, String year);
 	
+	public int getCurrentSem(Connection connection, int studentID);
+	
 }

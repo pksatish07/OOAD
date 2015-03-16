@@ -2,6 +2,7 @@ package org.iiitb.action.subjects;
 
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -32,19 +33,21 @@ public class ManageSubjectsAction extends ActionSupport implements SessionAware 
 		
 	private List<String> facultyList;
 	
-	@Override
-	public void setSession(Map<String, Object> arg0) {
+	public void setSession(Map<String, Object> session) {
 		this.session = session;
 	}
 	
-	public String execute() {
+	public String execute(){
+		
+		
 		CourseDAO courseDAO = new CourseDAOImpl();
 		Connection connection = ConnectionPool.getConnection();
-		//System.out.println("code = " +this.getCode() + " name = "+this.getName()+"credit = "+ this.getCredit() +" semester = "+ this.getSemester()+"faculty = "+this.getFaculty());
+		
 		courseDAO.setCourse(connection, code, name, credit, lastDate, semester, faculty);
 		ConnectionPool.freeConnection(connection);
-		return SUCCESS;
+		return "input";
 	}
+			
 	
 	public String initSubjects() {
 				

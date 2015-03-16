@@ -13,10 +13,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**
- * @author kempa
- * 
- */
+
 public class SemesterDAOImpl implements SemesterDAO {
 	private List<String> termList;
 	private List<String> semesterList;
@@ -39,10 +36,72 @@ public class SemesterDAOImpl implements SemesterDAO {
 	private static final String GET_TERMS_FOR_YEAR = "SELECT DISTINCT "
 			+ "term " + "FROM " + "semester " + "WHERE year = ?";
 
+	private static final String UPDATE_SEM = "update student " + 
+			"set  " + 
+			"    current_sem = ? " + 
+			"where " + 
+			"    student_id = ? ";
+	
+	
 	public SemesterDAOImpl() {
 		termList = new LinkedList<String>();
 	}
 
+	
+	  public boolean updateSemester(String studentName,int semester)
+		{
+			Connection con = ConnectionPool.getConnection();
+			PreparedStatement ps = null;
+			boolean result=false;
+			try
+			{
+			  /** Dirty fix **/
+			  
+			  final String GET_STUDENT_ID = "select student_id from student, user where user.name = ? and student_id = user_id";
+			  final String GET_SEMESTER = "select current_sem from student, user where user.name = ? and student_id = user_id";    
+
+			 
+			  ps = con.prepareStatement(GET_STUDENT_ID);
+			  ps.setString(1, studentName);
+	      ResultSet rs = ps.executeQuery();
+	      rs.next();
+	      int studentId = rs.getInt("student_id");
+	      
+	      ps = con.prepareStatement(GET_SEMESTER);
+		  ps.setString(1, studentName);
+      rs = ps.executeQuery();
+      rs.next();
+      int semester1 = rs.getInt("current_sem");
+	     
+	      /** End of dirty fix **/
+	      
+				ps = con.prepareStatement(UPDATE_SEM);
+				ps.setInt(1, semester);
+				ps.setInt(2, studentId);
+				
+				if(ps.executeUpdate()==1)
+				{
+					result=true;
+				}
+					
+			}
+			catch (SQLException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			finally
+			{
+				ConnectionPool.freeConnection(con);
+			}
+			return result;
+			
+		}
+	
+	
+	
+	
+	
 	public List<String> getTerms(int studentID) {
 		Connection con = ConnectionPool.getConnection();
 		PreparedStatement ps = null;
@@ -128,5 +187,22 @@ public class SemesterDAOImpl implements SemesterDAO {
 			}
 		}
 		return semesterList;
+	}
+
+	public int getCurrentSem(Connection connection, int studentID) {
+	int currentSem = 0;
+	PreparedStatement ps = null;
+	ResultSet rs =  null;
+	try {
+	ps =  connection.prepareStatement(GET_TERMS_QUERY);
+	ps.setInt(1,studentID);
+	rs = ps.executeQuery();
+	while(rs.next()){
+	currentSem = rs.getInt("current_sem");
+	}
+	} catch (SQLException e) {
+	e.printStackTrace();
+	}
+	return currentSem;
 	}
 }

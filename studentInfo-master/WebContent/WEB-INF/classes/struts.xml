@@ -34,7 +34,14 @@
 			<result name="login">home.jsp</result>
 		</action>
 
+		<action name="addProf" class="org.iiitb.action.addProf" method="execute">
+			<result name="success">profadd.jsp</result>
+		</action>
 
+		<action name="removeProf" class="org.iiitb.action.removeProf"
+			method="execute">
+			<result name="success">Profremove.jsp</result>
+		</action>
 
 
 		<action name="loginAction" class="org.iiitb.action.LoginAction"
@@ -53,7 +60,15 @@
 			<result name="login">home.jsp</result>
 		</action>
 
+		<action name="forgotPasswordRedirect">
+			<result>/forgotPassword.jsp</result>
+		</action>
 
+		<action name="forgotPassword" class="org.iiitb.action.ResetPasswordAction">
+			<result name="success">/home.jsp</result>
+			<result name="error">/forgotPassword.jsp</result>
+			<result name="input">/forgotPassword.jsp</result>
+		</action>
 
 		<action name="subjectsAction" class="org.iiitb.action.subjects.SubjectsAction">
 			<interceptor-ref name="secureAccess"></interceptor-ref>
@@ -64,8 +79,22 @@
 		<action name="imageAction" class="org.iiitb.action.image.ImageAction">
 		</action>
 
+		<action name="adminimageAction" class="org.iiitb.action.image.AdminImageAction">
+		</action>
+		<action name="updateimage" class="org.iiitb.action.image.AdminImageAction"
+			method="updateimage">
+			<result name="success">adminhome.jsp</result>
+			<result name="error">adminhome.jsp</result>
+		</action>
+
+		<action name="resetpwd" class="org.iiitb.action.admin.ResetPassword">
+			<result name="success">adminhome.jsp</result>
+			<result name="error">adminhome.jsp</result>
+		</action>
+
+
 		<action name="addSubjectsAction" class="org.iiitb.action.subjects.ManageSubjectsAction">
-			<result name="success">addSuccess.jsp</result>
+			<result name="input">addSuccess.jsp</result>
 			<result name="error">addError.jsp</result>
 		</action>
 		<action name="initSubjectsAction" class="org.iiitb.action.subjects.ManageSubjectsAction"
@@ -92,9 +121,11 @@
 		<action name="updateFriend" class="org.iiitb.action.friends.FriendProfileAction"
 			method="update">
 			<interceptor-ref name="secureAccess"></interceptor-ref>
-			<result name="success" type="tiles">myFriendsPage</result>
+			<result name="success" type="tiles">friendsProfilePage</result>
+			<result name="error" type="tiles">profileNotFoundPage</result>
 			<result name="login">home.jsp</result>
 		</action>
+
 
 		<action name="grades" class="org.iiitb.action.grades.GradesAction"
 			method="execute">
@@ -120,7 +151,7 @@
 		</action>
 		<action name="addSyllabusAction" class="org.iiitb.action.syllabus.SyllabusAction"
 			method="addSyllabus">
-			<result name="success">addSuccess.jsp</result>
+			<result name="success">Newsyllabussucces.jsp</result>
 			<result name="error">addError.jsp</result>
 		</action>
 
@@ -229,7 +260,7 @@
 
 		<action name="updateGradesAction" class="org.iiitb.action.admin.UpdateGradesAction"
 			method="execute">
-			<result name="success">addSuccess.jsp</result>
+			<result name="success">assigngradeSuccess.jsp</result>
 			<result name="error">addError.jsp</result>
 			<result name="login">adminhome.jsp</result>
 		</action>
@@ -243,9 +274,41 @@
 
 		<action name="UpdateEnrollment" class="org.iiitb.action.enrollment.UpdateEnrollment">
 			<result name="success" type="tiles">enrollmentMenuPage</result>
+			<result name="countError" type="tiles">enrollmentCountErrorPage
+			</result>
 			<result name="error" type="tiles">enrollmentErrorPage</result>
 		</action>
+<!-- Added for Notification functionality -->
+		
+		<action name="notificationAction" class="org.iiitb.action.notification.ShowNotification">
+			<result name="success" type="tiles">notificationPage</result>
+			<result name="error" type="tiles">notificationErrorPage</result>
+		</action>
 
+		<action name="acceptFriend" class="org.iiitb.action.friends.FriendProfileAction"
+			method="acceptFriend">
+			<interceptor-ref name="secureAccess"></interceptor-ref>
+			<result name="success" type="redirect">notificationAction</result>
+			<result name="error" type="tiles">profileNotFoundPage</result>
+			<result name="login">home.jsp</result>
+		</action>
+		
+		
+		<action name="Editsemesteraction" class="org.iiitb.action.editsemester.editsemesteraction"
+			method="execute">
+			<result name="success">editsemester.jsp</result>
+			<result name="error">addError.jsp</result>
+			<result name="login">adminhome.jsp</result>
+		</action>
+		
+		
+		<action name="Updatesemester" class="org.iiitb.action.editsemester.updatesemester"
+			method="execute">
+			<result name="success">addsemester.jsp</result>
+			<result name="error">addError.jsp</result>
+			<result name="login">adminhome.jsp</result>
+		</action>
+		
 	</package>
 
 </struts>
